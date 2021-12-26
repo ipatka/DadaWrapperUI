@@ -1,235 +1,139 @@
-const ERC20ABI = [
-  {
-    constant: true,
-    inputs: [],
-    name: "name",
-    outputs: [
-      {
-        name: "",
-        type: "string",
-      },
-    ],
-    payable: false,
-    stateMutability: "view",
-    type: "function",
-  },
+const DadaCollectibleABI = [
   {
     constant: false,
     inputs: [
       {
-        name: "_spender",
-        type: "address",
-      },
-      {
-        name: "_value",
+        name: "drawingId",
         type: "uint256",
       },
-    ],
-    name: "approve",
-    outputs: [
       {
-        name: "",
-        type: "bool",
-      },
-    ],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: "totalSupply",
-    outputs: [
-      {
-        name: "",
+        name: "printIndex",
         type: "uint256",
       },
-    ],
-    payable: false,
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    constant: false,
-    inputs: [
       {
-        name: "_from",
-        type: "address",
-      },
-      {
-        name: "_to",
-        type: "address",
-      },
-      {
-        name: "_value",
+        name: "minSalePriceInWei",
         type: "uint256",
       },
-    ],
-    name: "transferFrom",
-    outputs: [
       {
-        name: "",
-        type: "bool",
+        name: "toAddress",
+        type: "address",
       },
     ],
+    name: "offerCollectibleForSaleToAddress",
+    outputs: [],
     payable: false,
-    stateMutability: "nonpayable",
     type: "function",
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: "decimals",
-    outputs: [
-      {
-        name: "",
-        type: "uint8",
-      },
-    ],
-    payable: false,
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        name: "_owner",
-        type: "address",
-      },
-    ],
-    name: "balanceOf",
-    outputs: [
-      {
-        name: "balance",
-        type: "uint256",
-      },
-    ],
-    payable: false,
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: "symbol",
-    outputs: [
-      {
-        name: "",
-        type: "string",
-      },
-    ],
-    payable: false,
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        name: "_to",
-        type: "address",
-      },
-      {
-        name: "_value",
-        type: "uint256",
-      },
-    ],
-    name: "transfer",
-    outputs: [
-      {
-        name: "",
-        type: "bool",
-      },
-    ],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        name: "_owner",
-        type: "address",
-      },
-      {
-        name: "_spender",
-        type: "address",
-      },
-    ],
-    name: "allowance",
-    outputs: [
-      {
-        name: "",
-        type: "uint256",
-      },
-    ],
-    payable: false,
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    payable: true,
-    stateMutability: "payable",
-    type: "fallback",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        name: "owner",
-        type: "address",
-      },
-      {
-        indexed: true,
-        name: "spender",
-        type: "address",
-      },
-      {
-        indexed: false,
-        name: "value",
-        type: "uint256",
-      },
-    ],
-    name: "Approval",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        name: "from",
-        type: "address",
-      },
-      {
-        indexed: true,
-        name: "to",
-        type: "address",
-      },
-      {
-        indexed: false,
-        name: "value",
-        type: "uint256",
-      },
-    ],
-    name: "Transfer",
-    type: "event",
   },
 ];
-const DAIABI = [
+
+const DadaNFTABI = [
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "operator",
+        type: "address",
+      },
+      {
+        internalType: "bool",
+        name: "approved",
+        type: "bool",
+      },
+    ],
+    name: "setApprovalForAll",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
   {
     inputs: [
       {
         internalType: "uint256",
-        name: "chainId_",
+        name: "_collectibleId",
         type: "uint256",
       },
     ],
-    payable: false,
+    name: "collectibleInfo",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+];
+const DadaWrapperABI = [
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_dadaCollectibleAddress",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_dadaNftAddress",
+        type: "address",
+      },
+      {
+        internalType: "string",
+        name: "baseURI_",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "_contractURI",
+        type: "string",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "constructor",
   },
@@ -239,60 +143,23 @@ const DAIABI = [
       {
         indexed: true,
         internalType: "address",
-        name: "src",
+        name: "owner",
         type: "address",
       },
       {
         indexed: true,
         internalType: "address",
-        name: "guy",
+        name: "approved",
         type: "address",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "uint256",
-        name: "wad",
+        name: "tokenId",
         type: "uint256",
       },
     ],
     name: "Approval",
-    type: "event",
-  },
-  {
-    anonymous: true,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "bytes4",
-        name: "sig",
-        type: "bytes4",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "usr",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "bytes32",
-        name: "arg1",
-        type: "bytes32",
-      },
-      {
-        indexed: true,
-        internalType: "bytes32",
-        name: "arg2",
-        type: "bytes32",
-      },
-      {
-        indexed: false,
-        internalType: "bytes",
-        name: "data",
-        type: "bytes",
-      },
-    ],
-    name: "LogNote",
     type: "event",
   },
   {
@@ -301,19 +168,63 @@ const DAIABI = [
       {
         indexed: true,
         internalType: "address",
-        name: "src",
+        name: "owner",
         type: "address",
       },
       {
         indexed: true,
         internalType: "address",
-        name: "dst",
+        name: "operator",
         type: "address",
       },
       {
         indexed: false,
+        internalType: "bool",
+        name: "approved",
+        type: "bool",
+      },
+    ],
+    name: "ApprovalForAll",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "previousOwner",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "OwnershipTransferred",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "from",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
+        indexed: true,
         internalType: "uint256",
-        name: "wad",
+        name: "tokenId",
         type: "uint256",
       },
     ],
@@ -321,93 +232,128 @@ const DAIABI = [
     type: "event",
   },
   {
-    constant: true,
-    inputs: [],
-    name: "DOMAIN_SEPARATOR",
-    outputs: [
-      {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
-      },
-    ],
-    payable: false,
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: "PERMIT_TYPEHASH",
-    outputs: [
-      {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
-      },
-    ],
-    payable: false,
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    constant: true,
+    anonymous: false,
     inputs: [
       {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    name: "allowance",
-    outputs: [
-      {
+        indexed: false,
         internalType: "uint256",
-        name: "",
+        name: "_2017DrawingId",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "_2017PrintIndex",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "_wrappedTokenId",
         type: "uint256",
       },
     ],
-    payable: false,
-    stateMutability: "view",
-    type: "function",
+    name: "Unwrapped2017",
+    type: "event",
   },
   {
-    constant: false,
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "_2019TokenId",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "_2019TokenNumber",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "_wrappedTokenId",
+        type: "uint256",
+      },
+    ],
+    name: "Unwrapped2019",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "_2017DrawingId",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "_2017PrintIndex",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "_wrappedTokenId",
+        type: "uint256",
+      },
+    ],
+    name: "Wrapped2017",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "_2019TokenId",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "_2019TokenNumber",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "_wrappedTokenId",
+        type: "uint256",
+      },
+    ],
+    name: "Wrapped2019",
+    type: "event",
+  },
+  {
     inputs: [
       {
         internalType: "address",
-        name: "usr",
+        name: "to",
         type: "address",
       },
       {
         internalType: "uint256",
-        name: "wad",
+        name: "tokenId",
         type: "uint256",
       },
     ],
     name: "approve",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
-    payable: false,
+    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
-    constant: true,
     inputs: [
       {
         internalType: "address",
-        name: "",
+        name: "owner",
         type: "address",
       },
     ],
@@ -419,107 +365,114 @@ const DAIABI = [
         type: "uint256",
       },
     ],
-    payable: false,
     stateMutability: "view",
     type: "function",
   },
   {
-    constant: false,
-    inputs: [
-      {
-        internalType: "address",
-        name: "usr",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "wad",
-        type: "uint256",
-      },
-    ],
-    name: "burn",
-    outputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    constant: true,
     inputs: [],
-    name: "decimals",
+    name: "contractURI",
     outputs: [
       {
-        internalType: "uint8",
+        internalType: "string",
         name: "",
-        type: "uint8",
+        type: "string",
       },
     ],
-    payable: false,
     stateMutability: "view",
     type: "function",
   },
   {
-    constant: false,
     inputs: [
       {
-        internalType: "address",
-        name: "guy",
-        type: "address",
-      },
-    ],
-    name: "deny",
-    outputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: "address",
-        name: "usr",
-        type: "address",
+        internalType: "uint256",
+        name: "_2017DrawingId",
+        type: "uint256",
       },
       {
         internalType: "uint256",
-        name: "wad",
+        name: "_2017PrintIndex",
         type: "uint256",
       },
     ],
-    name: "mint",
-    outputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
+    name: "get2017TokenId",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "pure",
     type: "function",
   },
   {
-    constant: false,
     inputs: [
       {
-        internalType: "address",
-        name: "src",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "dst",
-        type: "address",
+        internalType: "uint256",
+        name: "_2019TokenId",
+        type: "uint256",
       },
       {
         internalType: "uint256",
-        name: "wad",
+        name: "_2019TokenNumber",
         type: "uint256",
       },
     ],
-    name: "move",
-    outputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
+    name: "get2019TokenId",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "pure",
     type: "function",
   },
   {
-    constant: true,
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+    ],
+    name: "getApproved",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "operator",
+        type: "address",
+      },
+    ],
+    name: "isApprovedForAll",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "name",
     outputs: [
@@ -529,138 +482,62 @@ const DAIABI = [
         type: "string",
       },
     ],
-    payable: false,
     stateMutability: "view",
     type: "function",
   },
   {
-    constant: true,
+    inputs: [],
+    name: "renounceOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [
       {
-        internalType: "address",
-        name: "",
-        type: "address",
+        internalType: "string",
+        name: "baseURI_",
+        type: "string",
       },
     ],
-    name: "nonces",
+    name: "setBaseURI",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "_contractURI",
+        type: "string",
+      },
+    ],
+    name: "setContractURI",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes4",
+        name: "interfaceId",
+        type: "bytes4",
+      },
+    ],
+    name: "supportsInterface",
     outputs: [
       {
-        internalType: "uint256",
+        internalType: "bool",
         name: "",
-        type: "uint256",
+        type: "bool",
       },
     ],
-    payable: false,
     stateMutability: "view",
     type: "function",
   },
   {
-    constant: false,
-    inputs: [
-      {
-        internalType: "address",
-        name: "holder",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "spender",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "nonce",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "expiry",
-        type: "uint256",
-      },
-      {
-        internalType: "bool",
-        name: "allowed",
-        type: "bool",
-      },
-      {
-        internalType: "uint8",
-        name: "v",
-        type: "uint8",
-      },
-      {
-        internalType: "bytes32",
-        name: "r",
-        type: "bytes32",
-      },
-      {
-        internalType: "bytes32",
-        name: "s",
-        type: "bytes32",
-      },
-    ],
-    name: "permit",
-    outputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: "address",
-        name: "usr",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "wad",
-        type: "uint256",
-      },
-    ],
-    name: "pull",
-    outputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: "address",
-        name: "usr",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "wad",
-        type: "uint256",
-      },
-    ],
-    name: "push",
-    outputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: "address",
-        name: "guy",
-        type: "address",
-      },
-    ],
-    name: "rely",
-    outputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    constant: true,
     inputs: [],
     name: "symbol",
     outputs: [
@@ -670,86 +547,18 @@ const DAIABI = [
         type: "string",
       },
     ],
-    payable: false,
     stateMutability: "view",
     type: "function",
   },
   {
-    constant: true,
-    inputs: [],
-    name: "totalSupply",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    payable: false,
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    constant: false,
     inputs: [
       {
-        internalType: "address",
-        name: "dst",
-        type: "address",
-      },
-      {
         internalType: "uint256",
-        name: "wad",
+        name: "tokenId",
         type: "uint256",
       },
     ],
-    name: "transfer",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        internalType: "address",
-        name: "src",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "dst",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "wad",
-        type: "uint256",
-      },
-    ],
-    name: "transferFrom",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: "version",
+    name: "tokenURI",
     outputs: [
       {
         internalType: "string",
@@ -757,29 +566,105 @@ const DAIABI = [
         type: "string",
       },
     ],
-    payable: false,
     stateMutability: "view",
     type: "function",
   },
   {
-    constant: true,
     inputs: [
       {
         internalType: "address",
-        name: "",
+        name: "from",
         type: "address",
       },
-    ],
-    name: "wards",
-    outputs: [
+      {
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
       {
         internalType: "uint256",
-        name: "",
+        name: "tokenId",
         type: "uint256",
       },
     ],
-    payable: false,
-    stateMutability: "view",
+    name: "transferFrom",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_2017DrawingId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_2017PrintIndex",
+        type: "uint256",
+      },
+    ],
+    name: "unwrap2017",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_2019TokenNumber",
+        type: "uint256",
+      },
+    ],
+    name: "unwrap2019",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_2017DrawingId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_2017PrintIndex",
+        type: "uint256",
+      },
+    ],
+    name: "wrap2017",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_2019TokenNumber",
+        type: "uint256",
+      },
+    ],
+    name: "wrap2019",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
 ];
@@ -788,13 +673,33 @@ const DAIABI = [
 module.exports = {
   1: {
     contracts: {
-      DAI: {
-        address: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
-        abi: DAIABI,
+      DadaCollectible: {
+        address: "0x068696A3cf3c4676B65F1c9975dd094260109d02",
+        abi: DadaCollectibleABI,
       },
-      UNI: {
-        address: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
-        abi: ERC20ABI,
+      DadaNFT: {
+        address: "0x34d77a17038491a2a9eaa6e690b7c7cd39fc8392",
+        abi: DadaNFTABI,
+      },
+      DadaWrapper: {
+        address: "0x5F53f9f5DcF76757f7CbF35C2e47164C65b9b5eD",
+        abi: DadaWrapperABI,
+      },
+    },
+  },
+  4: {
+    contracts: {
+      DadaCollectible: {
+        address: "0xAaDDe94e690EC67CD9AaE3f9D7bF38E065810111",
+        abi: DadaCollectibleABI,
+      },
+      DadaNFT: {
+        address: "0x7A8671a0b3b29268eED685da9CbF193157D85aF9",
+        abi: DadaNFTABI,
+      },
+      DadaWrapper: {
+        address: "0x5F53f9f5DcF76757f7CbF35C2e47164C65b9b5eD",
+        abi: DadaWrapperABI,
       },
     },
   },

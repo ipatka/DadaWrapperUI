@@ -5,10 +5,10 @@ import React from "react";
 
 export default function Header() {
   return (
-    <a href="https://github.com/austintgriffith/scaffold-eth" target="_blank" rel="noopener noreferrer">
+    <a href="https://github.com/ipatka/DadaWrapperUI/" target="_blank" rel="noopener noreferrer">
       <PageHeader
-        title="🏗 scaffold-eth"
-        subTitle="forkable Ethereum dev stack focused on fast product iteration"
+        title="🎁 Dada Wrapper"
+        subTitle="Simple UI to wrap and unwrap historic Dada collectibles"
         style={{ cursor: "pointer" }}
       />
     </a>
