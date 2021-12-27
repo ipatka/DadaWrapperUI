@@ -102,7 +102,7 @@ function Wrap2019({
                   >
                     <a
                       href={`${blockExplorer}token/${
-                        readContracts[wrapperContract] && readContracts[wrapperContract].address
+                        readContracts[nftContract] && readContracts[nftContract].address
                       }?a=${id}`}
                       target="_blank"
                     >

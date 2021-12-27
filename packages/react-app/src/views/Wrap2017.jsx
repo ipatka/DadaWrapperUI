@@ -135,8 +135,8 @@ function Wrap2017({
                   >
                     <a
                       href={`${blockExplorer}token/${
-                        readContracts[wrapperContract] && readContracts[wrapperContract].address
-                      }?a=${id}`}
+                        readContracts[dadaContract] && readContracts[dadaContract].address
+                      }`}
                       target="_blank"
                     >
                       <img src={item.image && item.image} alt={"2017 Dada #" + id} width="100" />
