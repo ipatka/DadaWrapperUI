@@ -1,5 +1,47 @@
 const DadaCollectibleABI = [
   {
+    constant: true,
+    inputs: [
+      {
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "OfferedForSale",
+    outputs: [
+      {
+        name: "isForSale",
+        type: "bool",
+      },
+      {
+        name: "drawingId",
+        type: "uint256",
+      },
+      {
+        name: "printIndex",
+        type: "uint256",
+      },
+      {
+        name: "seller",
+        type: "address",
+      },
+      {
+        name: "minValue",
+        type: "uint256",
+      },
+      {
+        name: "onlySellTo",
+        type: "address",
+      },
+      {
+        name: "lastSellValue",
+        type: "uint256",
+      },
+    ],
+    payable: false,
+    type: "function",
+  },
+  {
     constant: false,
     inputs: [
       {

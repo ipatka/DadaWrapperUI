@@ -53,59 +53,6 @@ function Wrap2019({
     fetchMetadataAndUpdate();
   }, [readContracts[wrapperContract], page]);
 
-  const onFinishFailed = errorInfo => {
-    console.log("Failed:", errorInfo);
-  };
-
-  const [form] = Form.useForm();
-  const sendForm = id => {
-    const [sending, setSending] = useState(false);
-
-    return (
-      <div>
-        <Form
-          form={form}
-          layout={"inline"}
-          name="sendOE"
-          initialValues={{ tokenId: id }}
-          onFinish={async values => {
-            setSending(true);
-            try {
-              const txCur = await tx(
-                writeContracts[wrapperContract]["safeTransferFrom(address,address,uint256)"](address, values["to"], id),
-              );
-              await txCur.wait();
-              fetchMetadataAndUpdate();
-              setSending(false);
-            } catch (e) {
-              console.log("send failed", e);
-              setSending(false);
-            }
-          }}
-          onFinishFailed={onFinishFailed}
-        >
-          <Form.Item
-            name="to"
-            rules={[
-              {
-                required: true,
-                message: "Which address should receive this NFT?",
-              },
-            ]}
-          >
-            <AddressInput ensProvider={mainnetProvider} placeholder={"to address"} />
-          </Form.Item>
-
-          <Form.Item>
-            <Button type="primary" htmlType="submit" loading={sending}>
-              Send
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
-    );
-  };
-
   let filteredOEs = Object.values(allWrappedTokens).filter(
     a => a.owner.address !== "0x0000000000000000000000000000000000000000",
   );

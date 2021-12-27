@@ -1,204 +1,84 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { Button, Card, List, Spin, Popover, Form, Switch } from "antd";
-import { RedoOutlined } from "@ant-design/icons";
 import { Address, AddressInput } from "../components";
-import { useDebounce } from "../hooks";
-import { ethers } from "ethers";
-import { useEventListener } from "eth-hooks/events/useEventListener";
+import { get2017Manifest, getUnwrapped2017 } from "../helpers/api";
 
-function OldEnglish({
+const handleUnwrap = async (tokenId, contract, tx) => {
+  const vintage = tokenId.slice(0, 4);
+  if (vintage === "2017") {
+    const drawingId = parseInt(tokenId.slice(4, 9));
+    const printIndex = parseInt(tokenId.slice(9, 14));
+    const txCur = await tx(contract.unwrap2017(drawingId, printIndex));
+    await txCur.wait();
+  }
+  if (vintage === "2019") {
+    const tokenNumber = parseInt(tokenId.slice(9, 14));
+    const txCur = await tx(contract.unwrap2019(tokenNumber));
+    await txCur.wait();
+  }
+};
+
+function Wrap2017({
   readContracts,
   mainnetProvider,
   blockExplorer,
-  totalSupply,
-  DEBUG,
   writeContracts,
   tx,
   address,
-  localProvider,
-  oldEnglishContract,
-  balance,
-  startBlock,
+  wrapperContract,
+  dadaContract,
 }) {
-  const [allOldEnglish, setAllOldEnglish] = useState({});
-  const [loadingOldEnglish, setLoadingOldEnglish] = useState(true);
+  const [allTokens, setAllTokens] = useState({});
+  const [loadingTokens, setLoadingTokens] = useState(true);
   const perPage = 12;
   const [page, setPage] = useState(0);
 
-  const fetchMetadataAndUpdate = async id => {
+  const fetchMetadataAndUpdate = async (drawingId, printIndex) => {
+    console.log({ drawingId, printIndex });
     try {
-      const tokenURI = await readContracts[oldEnglishContract].tokenURI(id);
-      const jsonManifestString = atob(tokenURI.substring(29));
+      const jsonManifest = await get2017Manifest(drawingId, printIndex);
+      console.log({ jsonManifest });
+      const collectibleUpdate = {};
+      const offered = await readContracts[dadaContract].OfferedForSale(printIndex);
+      let wrapable = false;
+      if (offered[0] && offered[5].toLowerCase() === readContracts[wrapperContract].address.toLowerCase())
+        wrapable = true;
+      console.log({ offered });
+      collectibleUpdate[printIndex] = { drawingId, printIndex, wrapable, ...jsonManifest };
 
-      try {
-        const jsonManifest = JSON.parse(jsonManifestString);
-        const collectibleUpdate = {};
-        collectibleUpdate[id] = { id: id, uri: tokenURI, ...jsonManifest };
-
-        setAllOldEnglish(i => ({ ...i, ...collectibleUpdate }));
-      } catch (e) {
-        console.log(e);
-      }
+      setAllTokens(i => ({ ...i, ...collectibleUpdate }));
     } catch (e) {
       console.log(e);
     }
   };
 
-  const updateAllOldEnglish = async fetchAll => {
-    if (readContracts[oldEnglishContract] && totalSupply /*&& totalSupply <= receives.length*/) {
-      setLoadingOldEnglish(true);
-      let numberSupply = totalSupply.toNumber();
+  const updateAllTokens = async () => {
+    try {
+      const tokenInfo = await getUnwrapped2017({ ownerAddress: address });
+      setLoadingTokens(true);
+      let numberSupply = tokenInfo.data.prints.length;
 
       let tokenList = Array(numberSupply).fill(0);
 
       tokenList.forEach((_, i) => {
-        let tokenId = i + 1;
-        if (tokenId <= numberSupply - page * perPage && tokenId >= numberSupply - page * perPage - perPage) {
-          fetchMetadataAndUpdate(tokenId);
-        } else if (!allOldEnglish[tokenId]) {
-          const simpleUpdate = {};
-          simpleUpdate[tokenId] = { id: tokenId };
-          setAllOldEnglish(i => ({ ...i, ...simpleUpdate }));
-        }
+        const token = tokenInfo.data.prints[i];
+        console.log({ token });
+        const drawingId = token.drawing.drawingId;
+        const print = token.printIndex;
+        fetchMetadataAndUpdate(drawingId, print);
       });
 
-      setLoadingOldEnglish(false);
-    }
-  };
-
-  const updateYourOldEnglish = async () => {
-    for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
-      try {
-        const tokenId = await readContracts[oldEnglishContract].tokenOfOwnerByIndex(address, tokenIndex);
-        fetchMetadataAndUpdate(tokenId);
-      } catch (e) {
-        console.log(e);
-      }
-    }
-  };
-
-  const updateOneOldEnglish = async id => {
-    if (readContracts[oldEnglishContract] && totalSupply) {
-      fetchMetadataAndUpdate(id);
+      setLoadingTokens(false);
+    } catch (e) {
+      console.log(e);
     }
   };
 
   useEffect(() => {
-    if (totalSupply && totalSupply.toNumber() > 0) updateAllOldEnglish(false);
-  }, [readContracts[oldEnglishContract], (totalSupply || "0").toString(), page]);
+    updateAllTokens();
+  }, [readContracts[wrapperContract], page]);
 
-  const onFinishFailed = errorInfo => {
-    console.log("Failed:", errorInfo);
-  };
-
-  const [form] = Form.useForm();
-  const sendForm = id => {
-    const [sending, setSending] = useState(false);
-
-    return (
-      <div>
-        <Form
-          form={form}
-          layout={"inline"}
-          name="sendOE"
-          initialValues={{ tokenId: id }}
-          onFinish={async values => {
-            setSending(true);
-            try {
-              const txCur = await tx(
-                writeContracts[oldEnglishContract]["safeTransferFrom(address,address,uint256)"](
-                  address,
-                  values["to"],
-                  id,
-                ),
-              );
-              await txCur.wait();
-              updateOneOldEnglish(id);
-              setSending(false);
-            } catch (e) {
-              console.log("send failed", e);
-              setSending(false);
-            }
-          }}
-          onFinishFailed={onFinishFailed}
-        >
-          <Form.Item
-            name="to"
-            rules={[
-              {
-                required: true,
-                message: "Which address should receive this OE?",
-              },
-            ]}
-          >
-            <AddressInput ensProvider={mainnetProvider} placeholder={"to address"} />
-          </Form.Item>
-
-          <Form.Item>
-            <Button type="primary" htmlType="submit" loading={sending}>
-              Send
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
-    );
-  };
-
-  const [pourForm] = Form.useForm();
-  const pour = id => {
-    const [pouring, setPouring] = useState(false);
-
-    return (
-      <div>
-        <Form
-          form={pourForm}
-          layout={"inline"}
-          name="pourOE"
-          initialValues={{ tokenId: id }}
-          onFinish={async values => {
-            setPouring(true);
-            try {
-              const txCur = await tx(writeContracts[oldEnglishContract]["pour"](id, values["to"]));
-              await txCur.wait();
-              updateOneOldEnglish(id);
-              setPouring(false);
-            } catch (e) {
-              console.log("pour failed", e);
-              setPouring(false);
-            }
-          }}
-          onFinishFailed={onFinishFailed}
-        >
-          <Form.Item
-            name="to"
-            rules={[
-              {
-                required: true,
-                message: "Who's getting a pour?",
-              },
-            ]}
-          >
-            <AddressInput ensProvider={mainnetProvider} placeholder={"to address"} />
-          </Form.Item>
-
-          <Form.Item>
-            <Button type="primary" htmlType="submit" loading={pouring}>
-              Pour
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
-    );
-  };
-
-  let filteredOEs = Object.values(allOldEnglish).sort((a, b) => b.id - a.id);
-  const [mine, setMine] = useState(false);
-  if (mine == true && address && filteredOEs) {
-    filteredOEs = filteredOEs.filter(function (el) {
-      return el.owner == address.toLowerCase();
-    });
-  }
+  let filteredOEs = Object.values(allTokens);
 
   return (
     <div style={{ width: "auto", margin: "auto", paddingBottom: 25, minHeight: 800 }}>
@@ -209,22 +89,11 @@ function OldEnglish({
           <div style={{ marginBottom: 5 }}>
             <Button
               onClick={() => {
-                return updateAllOldEnglish(true);
+                return fetchMetadataAndUpdate();
               }}
             >
               Refresh
             </Button>
-            <Switch
-              disabled={loadingOldEnglish}
-              style={{ marginLeft: 5 }}
-              value={mine}
-              onChange={() => {
-                setMine(!mine);
-                updateYourOldEnglish();
-              }}
-              checkedChildren="mine"
-              unCheckedChildren="all"
-            />
           </div>
           <List
             grid={{
@@ -236,125 +105,87 @@ function OldEnglish({
               xl: 6,
               xxl: 4,
             }}
-            locale={{ emptyText: `waiting for OEs...` }}
+            locale={{ emptyText: `waiting for tokens...` }}
             pagination={{
-              total: mine ? filteredOEs.length : totalSupply,
+              total: filteredOEs.length,
               defaultPageSize: perPage,
               defaultCurrent: page,
               onChange: currentPage => {
                 setPage(currentPage - 1);
-                console.log(currentPage);
               },
-              showTotal: (total, range) =>
-                `${range[0]}-${range[1]} of ${mine ? filteredOEs.length : totalSupply} items`,
+              showTotal: (total, range) => `${range[0]}-${range[1]} of ${filteredOEs.length} items`,
             }}
-            loading={loadingOldEnglish}
+            loading={loadingTokens}
             dataSource={filteredOEs ? filteredOEs : []}
             renderItem={item => {
-              const id = item.id;
+              const id = item.printIndex;
 
               return (
                 <List.Item key={id}>
                   <Card
                     title={
                       <div>
-                        <span style={{ fontSize: 18, marginRight: 8 }}>{item.name ? item.name : `OE #${id}`}</span>
-                        <Button
-                          shape="circle"
-                          onClick={() => {
-                            updateOneOldEnglish(id);
-                          }}
-                          icon={<RedoOutlined />}
-                        />
+                        <span style={{ fontSize: 18, marginRight: 8 }}>{item.name ? item.name : `Token #${id}`}</span>
                       </div>
                     }
                   >
                     <a
                       href={`${blockExplorer}token/${
-                        readContracts[oldEnglishContract] && readContracts[oldEnglishContract].address
+                        readContracts[wrapperContract] && readContracts[wrapperContract].address
                       }?a=${id}`}
                       target="_blank"
                     >
-                      <img src={item.image && item.image} alt={"OldEnglish #" + id} width="100" />
+                      <img src={item.image && item.image} alt={"2017 Dada #" + id} width="100" />
                     </a>
-                    {item.owner &&
-                    item.owner.toLowerCase() == readContracts[oldEnglishContract].address.toLowerCase() ? (
-                      <div>{item.description}</div>
-                    ) : (
-                      <div>
-                        <Address
-                          address={item.owner}
-                          ensProvider={mainnetProvider}
-                          blockExplorer={blockExplorer}
-                          fontSize={16}
-                        />
-                      </div>
-                    )}
-                    {address && item.owner == address.toLowerCase() && (
+                    <div>
+                      <Address
+                        address={address}
+                        ensProvider={mainnetProvider}
+                        blockExplorer={blockExplorer}
+                        fontSize={16}
+                      />
+                    </div>
+                    {address && item.wrapable && (
                       <>
-                        {item.attributes[0].value < 13 ? (
-                          <>
-                            <Button
-                              type="primary"
-                              onClick={async () => {
-                                try {
-                                  const txCur = await tx(writeContracts[oldEnglishContract].sip(id));
-                                  await txCur.wait();
-                                  updateOneOldEnglish(id);
-                                } catch (e) {
-                                  console.log("sip failed", e);
-                                }
-                              }}
-                            >
-                              Sip
-                            </Button>
-                            <Popover
-                              content={() => {
-                                return pour(id);
-                              }}
-                              title="Pour OE"
-                            >
-                              <Button type="primary">Pour</Button>
-                            </Popover>
-                          </>
-                        ) : (
-                          <Button
-                            type="primary"
-                            onClick={async () => {
-                              try {
-                                const txCur = await tx(writeContracts[oldEnglishContract].recycle(id));
-                                await txCur.wait();
-                                updateOneOldEnglish(id);
-                              } catch (e) {
-                                console.log("recycle failed", e);
-                              }
-                            }}
-                          >
-                            Recycle
-                          </Button>
-                        )}
                         <Button
                           type="primary"
                           onClick={async () => {
                             try {
-                              const txCur = await tx(writeContracts[oldEnglishContract].wrap(id));
+                              const txCur = await tx(
+                                writeContracts[wrapperContract].wrap2017(item.drawingId, item.printIndex),
+                              );
                               await txCur.wait();
-                              updateOneOldEnglish(id);
                             } catch (e) {
-                              console.log("wrap failed", e);
+                              console.log("wrap failed failed", e);
                             }
                           }}
                         >
                           Wrap
                         </Button>
-                        <Popover
-                          content={() => {
-                            return sendForm(id);
+                      </>
+                    )}
+                    {address && !item.wrapable && (
+                      <>
+                        <Button
+                          type="primary"
+                          onClick={async () => {
+                            try {
+                              const txCur = await tx(
+                                writeContracts[dadaContract].offerCollectibleForSaleToAddress(
+                                  item.drawingId,
+                                  item.printIndex,
+                                  0,
+                                  readContracts[wrapperContract].address,
+                                ),
+                              );
+                              await txCur.wait();
+                            } catch (e) {
+                              console.log("approve failed", e);
+                            }
                           }}
-                          title="Pass it:"
                         >
-                          <Button type="primary">Pass it!</Button>
-                        </Popover>
+                          Approve
+                        </Button>
                       </>
                     )}
                   </Card>
@@ -368,4 +199,4 @@ function OldEnglish({
   );
 }
 
-export default OldEnglish;
+export default Wrap2017;
