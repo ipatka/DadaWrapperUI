@@ -53,24 +53,28 @@ function Wrap2017({
   };
 
   const updateAllTokens = async () => {
-    try {
-      const tokenInfo = await getUnwrapped2017({ ownerAddress: address });
-      setLoadingTokens(true);
-      let numberSupply = tokenInfo.data.prints.length;
+    if (address) {
+      try {
+        const tokenInfo = await getUnwrapped2017({ ownerAddress: address });
+        setLoadingTokens(true);
+        let numberSupply = tokenInfo.data.prints.length;
 
-      let tokenList = Array(numberSupply).fill(0);
+        let tokenList = Array(numberSupply).fill(0);
 
-      tokenList.forEach((_, i) => {
-        const token = tokenInfo.data.prints[i];
-        console.log({ token });
-        const drawingId = token.drawing.drawingId;
-        const print = token.printIndex;
-        fetchMetadataAndUpdate(drawingId, print);
-      });
+        tokenList.forEach((_, i) => {
+          const token = tokenInfo.data.prints[i];
+          console.log({ token });
+          const drawingId = token.drawing.drawingId;
+          const print = token.printIndex;
+          fetchMetadataAndUpdate(drawingId, print);
+        });
 
+        setLoadingTokens(false);
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
       setLoadingTokens(false);
-    } catch (e) {
-      console.log(e);
     }
   };
 
@@ -105,7 +109,7 @@ function Wrap2017({
               xl: 6,
               xxl: 4,
             }}
-            locale={{ emptyText: `waiting for tokens...` }}
+            locale={address ? { emptyText: `waiting for tokens...` } : { emptyText: `connect your wallet...` }}
             pagination={{
               total: filteredOEs.length,
               defaultPageSize: perPage,

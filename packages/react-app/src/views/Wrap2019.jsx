@@ -1,22 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, List, Spin, Popover, Form, Switch } from "antd";
-import { Address, AddressInput } from "../components";
+import { Button, Card, List, Spin } from "antd";
+import { Address } from "../components";
 import { getUnwrapped2019 } from "../helpers/api";
-
-const handleUnwrap = async (tokenId, contract, tx) => {
-  const vintage = tokenId.slice(0, 4);
-  if (vintage === "2017") {
-    const drawingId = parseInt(tokenId.slice(4, 9));
-    const printIndex = parseInt(tokenId.slice(9, 14));
-    const txCur = await tx(contract.unwrap2017(drawingId, printIndex));
-    await txCur.wait();
-  }
-  if (vintage === "2019") {
-    const tokenNumber = parseInt(tokenId.slice(9, 14));
-    const txCur = await tx(contract.unwrap2019(tokenNumber));
-    await txCur.wait();
-  }
-};
 
 function Wrap2019({
   readContracts,
@@ -35,17 +20,25 @@ function Wrap2019({
   const [page, setPage] = useState(0);
 
   const fetchMetadataAndUpdate = async () => {
-    try {
-      const assetsResponse = await getUnwrapped2019({ ownerAddress: address, limit: perPage, offset: page * perPage });
-      const isApproved = await readContracts[nftContract].isApprovedForAll(
-        address,
-        readContracts[wrapperContract].address,
-      );
-      setApproved(isApproved);
-      setAllWrappedTokens(assetsResponse.assets);
+    if (address) {
+      try {
+        const assetsResponse = await getUnwrapped2019({
+          ownerAddress: address,
+          limit: perPage,
+          offset: page * perPage,
+        });
+        const isApproved = await readContracts[nftContract].isApprovedForAll(
+          address,
+          readContracts[wrapperContract].address,
+        );
+        setApproved(isApproved);
+        setAllWrappedTokens(assetsResponse.assets);
+        setLoadingWrappedTokens(false);
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
       setLoadingWrappedTokens(false);
-    } catch (e) {
-      console.log(e);
     }
   };
 
@@ -82,7 +75,7 @@ function Wrap2019({
               xl: 6,
               xxl: 4,
             }}
-            locale={{ emptyText: `waiting for tokens...` }}
+            locale={address ? { emptyText: `waiting for tokens...` } : { emptyText: `connect your wallet...` }}
             pagination={{
               total: filteredOEs.length,
               defaultPageSize: perPage,
