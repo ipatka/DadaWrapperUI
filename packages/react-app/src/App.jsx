@@ -248,19 +248,19 @@ function App(props) {
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
       <Menu style={{ textAlign: "center", marginTop: 40 }} selectedKeys={[location.pathname]} mode="horizontal">
-        <Menu.Item key="/debug">
-          <Link to="/debug">Debug Contracts</Link>
-        </Menu.Item>
         <Menu.Item key="/">
           <Link to="/exampleui">ExampleUI</Link>
         </Menu.Item>
         <Menu.Item key="/wrapped">
           <Link to="/wrapped">Wrapped Tokens</Link>
         </Menu.Item>
+        <Menu.Item key="/contracts">
+          <Link to="/contracts">Contracts</Link>
+        </Menu.Item>
       </Menu>
 
       <Switch>
-        <Route exact path="/debug">
+        <Route exact path="/contracts">
           {/*
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI

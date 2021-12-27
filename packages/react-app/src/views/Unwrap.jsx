@@ -3,6 +3,21 @@ import { Button, Card, List, Spin, Popover, Form, Switch } from "antd";
 import { Address, AddressInput } from "../components";
 import { getCollectionStats, getWrappedItems } from "../helpers/api";
 
+const handleUnwrap = async (tokenId, contract, tx) => {
+  const vintage = tokenId.slice(0, 4);
+  if (vintage === "2017") {
+    const drawingId = parseInt(tokenId.slice(4, 9));
+    const printIndex = parseInt(tokenId.slice(9, 14));
+    const txCur = await tx(contract.unwrap2017(drawingId, printIndex));
+    await txCur.wait();
+  }
+  if (vintage === "2019") {
+    const tokenNumber = parseInt(tokenId.slice(9, 14));
+    const txCur = await tx(contract.unwrap2019(tokenNumber));
+    await txCur.wait();
+  }
+};
+
 function WrappedTokens({
   readContracts,
   mainnetProvider,
@@ -24,7 +39,6 @@ function WrappedTokens({
     if (mine) ownerAddress = address;
     try {
       const assetsResponse = await getWrappedItems({ ownerAddress, limit: perPage, offset: page * perPage });
-      console.log({ assetsResponse });
       setAllWrappedTokens(assetsResponse.assets);
       try {
         const statsResponse = await getCollectionStats();
@@ -40,7 +54,7 @@ function WrappedTokens({
 
   useEffect(() => {
     fetchMetadataAndUpdate();
-  }, [readContracts[wrapperContract], page]);
+  }, [readContracts[wrapperContract], page, mine]);
 
   const onFinishFailed = errorInfo => {
     console.log("Failed:", errorInfo);
@@ -98,7 +112,6 @@ function WrappedTokens({
   let filteredOEs = Object.values(allWrappedTokens).filter(
     a => a.owner.address !== "0x0000000000000000000000000000000000000000",
   );
-  console.log({ filteredOEs });
 
   return (
     <div style={{ width: "auto", margin: "auto", paddingBottom: 25, minHeight: 800 }}>
@@ -120,7 +133,6 @@ function WrappedTokens({
               value={mine}
               onChange={() => {
                 setMine(!mine);
-                fetchMetadataAndUpdate();
               }}
               checkedChildren="mine"
               unCheckedChildren="all"
@@ -143,7 +155,6 @@ function WrappedTokens({
               defaultCurrent: page,
               onChange: currentPage => {
                 setPage(currentPage - 1);
-                console.log(currentPage);
               },
               showTotal: (total, range) =>
                 `${range[0]}-${range[1]} of ${mine ? filteredOEs.length : totalSupply} items`,
@@ -151,7 +162,6 @@ function WrappedTokens({
             loading={loadingWrappedTokens}
             dataSource={filteredOEs ? filteredOEs : []}
             renderItem={item => {
-              console.log({ item });
               const id = item.token_id;
 
               return (
@@ -187,9 +197,7 @@ function WrappedTokens({
                           type="primary"
                           onClick={async () => {
                             try {
-                              const txCur = await tx(writeContracts[wrapperContract].wrap(id));
-                              await txCur.wait();
-                              updateOneWrappedTokens(id);
+                              await handleUnwrap(item.token_id, writeContracts[wrapperContract], tx);
                             } catch (e) {
                               console.log("wrap failed", e);
                             }
