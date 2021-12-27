@@ -28,7 +28,7 @@ import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home, ExampleUI, Hints, Subgraph } from "./views";
+import { ExampleUI, Unwrap } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -70,6 +70,7 @@ const providers = [
 ];
 
 function App(props) {
+  const wrapperContract = "DadaWrapper";
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
   // reference './constants.js' for other networks
   const networkOptions = [initialNetwork.name, "mainnet", "rinkeby"];
@@ -253,6 +254,9 @@ function App(props) {
         <Menu.Item key="/">
           <Link to="/exampleui">ExampleUI</Link>
         </Menu.Item>
+        <Menu.Item key="/wrapped">
+          <Link to="/wrapped">Wrapped Tokens</Link>
+        </Menu.Item>
       </Menu>
 
       <Switch>
@@ -289,6 +293,17 @@ function App(props) {
             address={address}
             blockExplorer={blockExplorer}
             contractConfig={contractConfig}
+          />
+        </Route>
+        <Route path="/wrapped">
+          <Unwrap
+            readContracts={readContracts}
+            mainnetProvider={mainnetProvider}
+            blockExplorer={blockExplorer}
+            writeContracts={writeContracts}
+            tx={tx}
+            address={address}
+            wrapperContract={wrapperContract}
           />
         </Route>
         <Route path="/">
