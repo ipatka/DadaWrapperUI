@@ -28,7 +28,7 @@ import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { ExampleUI, Unwrap, Wrap2019 } from "./views";
+import { Unwrap, Wrap2019 } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -249,13 +249,10 @@ function App(props) {
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
       <Menu style={{ textAlign: "center", marginTop: 40 }} selectedKeys={[location.pathname]} mode="horizontal">
-        <Menu.Item key="/">
-          <Link to="/exampleui">ExampleUI</Link>
-        </Menu.Item>
         <Menu.Item key="/wrap2019">
           <Link to="/wrap2019">Wrap 2019</Link>
         </Menu.Item>
-        <Menu.Item key="/wrapped">
+        <Menu.Item key="/">
           <Link to="/wrapped">Wrapped Tokens</Link>
         </Menu.Item>
         <Menu.Item key="/contracts">
@@ -311,7 +308,7 @@ function App(props) {
             nftContract={nftContract}
           />
         </Route>
-        <Route path="/wrapped">
+        <Route path="/">
           <Unwrap
             readContracts={readContracts}
             mainnetProvider={mainnetProvider}
@@ -320,20 +317,6 @@ function App(props) {
             tx={tx}
             address={address}
             wrapperContract={wrapperContract}
-          />
-        </Route>
-        <Route path="/">
-          <ExampleUI
-            address={address}
-            userSigner={userSigner}
-            mainnetProvider={mainnetProvider}
-            localProvider={localProvider}
-            yourLocalBalance={yourLocalBalance}
-            price={price}
-            tx={tx}
-            writeContracts={writeContracts}
-            readContracts={readContracts}
-            purpose={purpose}
           />
         </Route>
       </Switch>
