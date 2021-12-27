@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Card, List, Spin, Popover, Form, Switch } from "antd";
 import { Address, AddressInput } from "../components";
-import { getCollectionStats, getWrappedItems } from "../helpers/api";
+import { getWrappedCollectionStats, getWrapped2019 } from "../helpers/api";
 
 const handleUnwrap = async (tokenId, contract, tx) => {
   const vintage = tokenId.slice(0, 4);
@@ -13,6 +13,8 @@ const handleUnwrap = async (tokenId, contract, tx) => {
   }
   if (vintage === "2019") {
     const tokenNumber = parseInt(tokenId.slice(9, 14));
+    const encoded = await contract.interface.encodeFunctionData("unwrap2019(uint256)", [tokenNumber]);
+    console.log({ encoded });
     const txCur = await tx(contract.unwrap2019(tokenNumber));
     await txCur.wait();
   }
@@ -38,10 +40,10 @@ function WrappedTokens({
     let ownerAddress;
     if (mine) ownerAddress = address;
     try {
-      const assetsResponse = await getWrappedItems({ ownerAddress, limit: perPage, offset: page * perPage });
+      const assetsResponse = await getWrapped2019({ ownerAddress, limit: perPage, offset: page * perPage });
       setAllWrappedTokens(assetsResponse.assets);
       try {
-        const statsResponse = await getCollectionStats();
+        const statsResponse = await getWrappedCollectionStats();
         setTotalSupply(statsResponse.stats.total_supply);
       } catch (e) {
         console.log(e);
