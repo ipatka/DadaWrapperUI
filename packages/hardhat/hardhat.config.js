@@ -94,7 +94,7 @@ module.exports = {
     //   accounts: [`${process.env.GOERLI_DEPLOYER_PRIV_KEY}`],
     // },
     // xdai: {
-    //   url: 'https://dai.poa.network',
+    //   url: 'https://rpc.gnosischain.com',
     //   gasPrice: 1000000000,
     //   accounts: [`${process.env.XDAI_DEPLOYER_PRIV_KEY}`],
     // },
@@ -146,7 +146,7 @@ module.exports = {
       },
     },
     xdai: {
-      url: "https://rpc.xdaichain.com/",
+      url: "https://rpc.gnosischain.com/",
       gasPrice: 1000000000,
       accounts: {
         mnemonic: mnemonic(),

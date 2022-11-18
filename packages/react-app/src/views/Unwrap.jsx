@@ -32,7 +32,7 @@ function WrappedTokens({
   const [allWrappedTokens, setAllWrappedTokens] = useState({});
   const [loadingWrappedTokens, setLoadingWrappedTokens] = useState(true);
   const [mine, setMine] = useState(false);
-  const perPage = 12;
+  const perPage = 25;
   const [page, setPage] = useState(0);
   const [totalSupply, setTotalSupply] = useState(0);
 
@@ -41,9 +41,11 @@ function WrappedTokens({
     if (mine) ownerAddress = address;
     try {
       const assetsResponse = await getWrapped2019({ ownerAddress, limit: perPage, offset: page * perPage });
+      console.log({ assetsResponse });
       setAllWrappedTokens(assetsResponse.assets);
       try {
         const statsResponse = await getWrappedCollectionStats();
+        console.log({ statsResponse });
         setTotalSupply(statsResponse.stats.total_supply);
       } catch (e) {
         console.log(e);
@@ -111,9 +113,12 @@ function WrappedTokens({
     );
   };
 
-  let filteredOEs = Object.values(allWrappedTokens).filter(
-    a => a.owner.address !== "0x0000000000000000000000000000000000000000",
-  );
+  let filteredOEs = Object.values(allWrappedTokens);
+  // let filteredOEs = Object.values(allWrappedTokens).filter(
+  //   a => a.owner.address !== "0x0000000000000000000000000000000000000000",
+  // );
+
+  console.log({ allWrappedTokens, filteredOEs });
 
   return (
     <div style={{ width: "auto", margin: "auto", paddingBottom: 25, minHeight: 800 }}>
@@ -185,8 +190,9 @@ function WrappedTokens({
                     </a>
                     {item.owner && (
                       <div>
+                        Creator:
                         <Address
-                          address={item.owner.address}
+                          address={item.creator.address}
                           ensProvider={mainnetProvider}
                           blockExplorer={blockExplorer}
                           fontSize={16}
