@@ -33,8 +33,9 @@ function WrappedTokens({
   const [loadingWrappedTokens, setLoadingWrappedTokens] = useState(true);
   const [mine, setMine] = useState(false);
   const perPage = 25;
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState({ prev: null, next: null, position: 0 });
   const [totalSupply, setTotalSupply] = useState(0);
+  const [isNextQuery, setIsNextQuery] = useState(true);
 
   const fetchMetadataAndUpdate = async () => {
     let ownerAddress;
@@ -58,7 +59,7 @@ function WrappedTokens({
 
   useEffect(() => {
     fetchMetadataAndUpdate();
-  }, [readContracts[wrapperContract], page, mine]);
+  }, [mine]);
 
   const onFinishFailed = errorInfo => {
     console.log("Failed:", errorInfo);
