@@ -41,8 +41,13 @@ function WrappedTokens({
     let ownerAddress;
     if (mine) ownerAddress = address;
     try {
-      const assetsResponse = await getWrapped2019({ ownerAddress, limit: perPage, offset: page * perPage });
+      const assetsResponse = await getWrapped2019({
+        ownerAddress,
+        limit: perPage,
+        offset: isNextQuery ? page.next : page.prev,
+      });
       console.log({ assetsResponse });
+      setPage({ prev: assetsResponse.previous, next: assetsResponse.next, position: 0 });
       setAllWrappedTokens(assetsResponse.assets);
       try {
         const statsResponse = await getWrappedCollectionStats();
