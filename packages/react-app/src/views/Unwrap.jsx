@@ -156,16 +156,6 @@ function WrappedTokens({
               xxl: 4,
             }}
             locale={{ emptyText: `waiting for tokens...` }}
-            pagination={{
-              total: mine ? filteredOEs.length : totalSupply,
-              defaultPageSize: perPage,
-              defaultCurrent: page,
-              onChange: currentPage => {
-                setPage(currentPage - 1);
-              },
-              showTotal: (total, range) =>
-                `${range[0]}-${range[1]} of ${mine ? filteredOEs.length : totalSupply} items`,
-            }}
             loading={loadingWrappedTokens}
             dataSource={filteredOEs ? filteredOEs : []}
             renderItem={item => {
