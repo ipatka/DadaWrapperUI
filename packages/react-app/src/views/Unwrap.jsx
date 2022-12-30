@@ -218,6 +218,25 @@ function WrappedTokens({
               );
             }}
           />
+          <div>
+            <Button
+              onClick={() => {
+                setIsNextQuery(false);
+
+              }}
+              disabled={!page.prev}
+            >
+              Previous
+            </Button>
+            <Button
+              onClick={() => {
+                setIsNextQuery(true);
+              }}
+              disabled={!page.next}
+            >
+              Next
+            </Button>
+          </div>
         </div>
       )}
     </div>
