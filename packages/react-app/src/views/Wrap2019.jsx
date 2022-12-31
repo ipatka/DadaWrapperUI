@@ -76,15 +76,6 @@ function Wrap2019({
               xxl: 4,
             }}
             locale={address ? { emptyText: `waiting for tokens...` } : { emptyText: `connect your wallet...` }}
-            pagination={{
-              total: filteredOEs.length,
-              defaultPageSize: perPage,
-              defaultCurrent: page,
-              onChange: currentPage => {
-                setPage(currentPage - 1);
-              },
-              showTotal: (total, range) => `${range[0]}-${range[1]} of ${filteredOEs.length} items`,
-            }}
             loading={loadingWrappedTokens}
             dataSource={filteredOEs ? filteredOEs : []}
             renderItem={item => {
