@@ -209,7 +209,7 @@ function WrappedTokens({
             }}
           />
           <div>
-            <p>{mine ? filteredOEs.length : totalSupply} items</p>
+            {!mine && <p>{totalSupply} items</p>}
             <Button onClick={() => fetchMetadataAndUpdate(null)} disabled={!page.prev}>
               First Page
             </Button>
