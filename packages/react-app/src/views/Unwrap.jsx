@@ -94,7 +94,7 @@ function WrappedTokens({
                 writeContracts[wrapperContract]["safeTransferFrom(address,address,uint256)"](address, values["to"], id),
               );
               await txCur.wait();
-              fetchMetadataAndUpdate();
+              fetchMetadataAndUpdate(null);
               setSending(false);
             } catch (e) {
               console.log("send failed", e);
@@ -141,7 +141,7 @@ function WrappedTokens({
           <div style={{ marginBottom: 5 }}>
             <Button
               onClick={() => {
-                return fetchMetadataAndUpdate();
+                return fetchMetadataAndUpdate(null);
               }}
             >
               Refresh
@@ -233,20 +233,19 @@ function WrappedTokens({
           <div>
             <Button
               onClick={() => {
-                setIsNextQuery(false);
-
+                fetchMetadataAndUpdate(false);
               }}
               disabled={!page.prev}
             >
-              Previous
+              Previous Page
             </Button>
             <Button
               onClick={() => {
-                setIsNextQuery(true);
+                fetchMetadataAndUpdate(true);
               }}
               disabled={!page.next}
             >
-              Next
+              Next Page
             </Button>
           </div>
         </div>
