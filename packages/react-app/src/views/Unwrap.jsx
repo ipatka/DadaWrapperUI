@@ -51,9 +51,6 @@ function WrappedTokens({
               limit: perPage,
               offset: isNextQuery ? page.next : page.prev,
             });
-      assetsResponse.asset = assetsResponse.assets.map(asset => {
-        return { ...asset, owner: { address: mine ? address : null } };
-      }); //TODO: have to find the unknown owner of the tokens
       console.log({ assetsResponse });
       setPage({ prev: assetsResponse.previous, next: assetsResponse.next });
       setAllWrappedTokens(assetsResponse.assets);
