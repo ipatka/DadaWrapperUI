@@ -55,6 +55,7 @@ export default function Contract({
   blockExplorer,
   chainId,
   contractConfig,
+  collection,
 }) {
   const contracts = useContractLoader(provider, contractConfig, chainId);
   let contract;
@@ -117,7 +118,7 @@ export default function Contract({
       <Card
         title={
           <div>
-            {name}
+            {collection}
             <div style={{ float: "right" }}>
               <Account
                 address={address}
