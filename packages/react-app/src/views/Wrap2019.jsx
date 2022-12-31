@@ -17,16 +17,23 @@ function Wrap2019({
   const [approved, setApproved] = useState({});
   const [loadingWrappedTokens, setLoadingWrappedTokens] = useState(true);
   const perPage = 12;
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState({ prev: null, next: null });
 
-  const fetchMetadataAndUpdate = async () => {
+  const fetchMetadataAndUpdate = async isNextQuery => {
     if (address) {
       try {
-        const assetsResponse = await getUnwrapped2019({
-          ownerAddress: address,
-          limit: perPage,
-          offset: page * perPage,
-        });
+        const assetsResponse =
+          isNextQuery === null
+            ? await getUnwrapped2019({
+                ownerAddress: address,
+                limit: perPage,
+                offset: null,
+              })
+            : await getUnwrapped2019({
+                ownerAddress: address,
+                limit: perPage,
+                offset: isNextQuery ? page.next : page.prev,
+              });
         const isApproved = await readContracts[nftContract].isApprovedForAll(
           address,
           readContracts[wrapperContract].address,
@@ -46,9 +53,7 @@ function Wrap2019({
     fetchMetadataAndUpdate();
   }, [readContracts[wrapperContract], page]);
 
-  let filteredOEs = Object.values(allWrappedTokens).filter(
-    a => a.owner.address !== "0x0000000000000000000000000000000000000000",
-  );
+  let filteredOEs = Object.values(allWrappedTokens);
 
   return (
     <div style={{ width: "auto", margin: "auto", paddingBottom: 25, minHeight: 800 }}>
