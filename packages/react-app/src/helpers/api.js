@@ -29,8 +29,8 @@ export function getWrappedCollectionStats() {
 export function getUnwrapped2019({ ownerAddress, limit, offset }) {
   let path = "https://api.opensea.io/api/v1/assets?asset_contract_address=0x34d77a17038491a2a9eaa6e690b7c7cd39fc8392";
   if (ownerAddress) path += `&owner=${ownerAddress}`;
-  if (offset.next) {
-    path += `&cursor=${offset.next}`;
+  if (offset !== null) {
+    path += `&cursor=${offset}`;
   }
   if (limit) path += `&limit=${limit}`;
   // console.log({ path });
