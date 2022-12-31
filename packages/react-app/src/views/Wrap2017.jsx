@@ -34,10 +34,11 @@ function Wrap2017({
   const [page, setPage] = useState(0);
 
   const fetchMetadataAndUpdate = async (drawingId, printIndex) => {
-    console.log({ drawingId, printIndex });
+    // console.log({ drawingId, printIndex });
     try {
       const jsonManifest = await get2017Manifest(drawingId, printIndex);
       console.log({ jsonManifest });
+      jsonManifest.image = "https://ipfs.io/ipfs/" + jsonManifest.image.split("/").at(-1);
       const collectibleUpdate = {};
       const offered = await readContracts[dadaContract].OfferedForSale(printIndex);
       let wrapable = false;
