@@ -36,15 +36,22 @@ function WrappedTokens({
   const [page, setPage] = useState({ prev: null, next: null });
   const [totalSupply, setTotalSupply] = useState(0);
 
-  const fetchMetadataAndUpdate = async () => {
+  const fetchMetadataAndUpdate = async isNextQuery => {
     let ownerAddress;
     if (mine) ownerAddress = address;
     try {
-      const assetsResponse = await getWrapped2019({
-        ownerAddress,
-        limit: perPage,
-        offset: isNextQuery ? page.next : page.prev,
-      });
+      const assetsResponse =
+        isNextQuery === null
+          ? await getWrapped2019({
+              ownerAddress,
+              limit: perPage,
+              offset: null,
+            })
+          : await getWrapped2019({
+              ownerAddress,
+              limit: perPage,
+              offset: isNextQuery ? page.next : page.prev,
+            });
       console.log({ assetsResponse });
       setPage({ prev: assetsResponse.previous, next: assetsResponse.next });
       setAllWrappedTokens(assetsResponse.assets);
