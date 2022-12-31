@@ -141,57 +141,51 @@ function Wrap2017({
                     >
                       <img src={item.image && item.image} alt={"2017 Dada #" + id} width="100" />
                     </a>
-                    <div>
-                      <Address
-                        address={address}
-                        ensProvider={mainnetProvider}
-                        blockExplorer={blockExplorer}
-                        fontSize={16}
-                      />
+                    <div style={{ position: "relative", top: "0.5em" }}>
+                      {address && item.wrapable && (
+                        <>
+                          <Button
+                            type="primary"
+                            onClick={async () => {
+                              try {
+                                const txCur = await tx(
+                                  writeContracts[wrapperContract].wrap2017(item.drawingId, item.printIndex),
+                                );
+                                await txCur.wait();
+                              } catch (e) {
+                                console.log("wrap failed failed", e);
+                              }
+                            }}
+                          >
+                            Wrap
+                          </Button>
+                        </>
+                      )}
+                      {address && !item.wrapable && (
+                        <>
+                          <Button
+                            type="primary"
+                            onClick={async () => {
+                              try {
+                                const txCur = await tx(
+                                  writeContracts[dadaContract].offerCollectibleForSaleToAddress(
+                                    item.drawingId,
+                                    item.printIndex,
+                                    0,
+                                    readContracts[wrapperContract].address,
+                                  ),
+                                );
+                                await txCur.wait();
+                              } catch (e) {
+                                console.log("approve failed", e);
+                              }
+                            }}
+                          >
+                            Approve
+                          </Button>
+                        </>
+                      )}
                     </div>
-                    {address && item.wrapable && (
-                      <>
-                        <Button
-                          type="primary"
-                          onClick={async () => {
-                            try {
-                              const txCur = await tx(
-                                writeContracts[wrapperContract].wrap2017(item.drawingId, item.printIndex),
-                              );
-                              await txCur.wait();
-                            } catch (e) {
-                              console.log("wrap failed failed", e);
-                            }
-                          }}
-                        >
-                          Wrap
-                        </Button>
-                      </>
-                    )}
-                    {address && !item.wrapable && (
-                      <>
-                        <Button
-                          type="primary"
-                          onClick={async () => {
-                            try {
-                              const txCur = await tx(
-                                writeContracts[dadaContract].offerCollectibleForSaleToAddress(
-                                  item.drawingId,
-                                  item.printIndex,
-                                  0,
-                                  readContracts[wrapperContract].address,
-                                ),
-                              );
-                              await txCur.wait();
-                            } catch (e) {
-                              console.log("approve failed", e);
-                            }
-                          }}
-                        >
-                          Approve
-                        </Button>
-                      </>
-                    )}
                   </Card>
                 </List.Item>
               );
