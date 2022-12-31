@@ -33,9 +33,8 @@ function WrappedTokens({
   const [loadingWrappedTokens, setLoadingWrappedTokens] = useState(true);
   const [mine, setMine] = useState(false);
   const perPage = 24;
-  const [page, setPage] = useState({ prev: null, next: null, position: 0 });
+  const [page, setPage] = useState({ prev: null, next: null });
   const [totalSupply, setTotalSupply] = useState(0);
-  const [isNextQuery, setIsNextQuery] = useState(true);
 
   const fetchMetadataAndUpdate = async () => {
     let ownerAddress;
@@ -47,7 +46,7 @@ function WrappedTokens({
         offset: isNextQuery ? page.next : page.prev,
       });
       console.log({ assetsResponse });
-      setPage({ prev: assetsResponse.previous, next: assetsResponse.next, position: 0 });
+      setPage({ prev: assetsResponse.previous, next: assetsResponse.next });
       setAllWrappedTokens(assetsResponse.assets);
       try {
         const statsResponse = await getWrappedCollectionStats();
