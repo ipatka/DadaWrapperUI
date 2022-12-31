@@ -14,7 +14,7 @@ const handleUnwrap = async (tokenId, contract, tx) => {
   if (vintage === "2019") {
     const tokenNumber = parseInt(tokenId.slice(9, 14));
     const encoded = await contract.interface.encodeFunctionData("unwrap2019(uint256)", [tokenNumber]);
-    console.log({ encoded });
+    // console.log({ encoded });
     const txCur = await tx(contract.unwrap2019(tokenNumber));
     await txCur.wait();
   }
@@ -37,8 +37,7 @@ function WrappedTokens({
   const [totalSupply, setTotalSupply] = useState(0);
 
   const fetchMetadataAndUpdate = async isNextQuery => {
-    let ownerAddress;
-    if (mine) ownerAddress = address;
+    const ownerAddress = mine ? address : null;
     try {
       const assetsResponse =
         isNextQuery === null
@@ -52,12 +51,15 @@ function WrappedTokens({
               limit: perPage,
               offset: isNextQuery ? page.next : page.prev,
             });
+      assetsResponse.asset = assetsResponse.assets.map(asset => {
+        return { ...asset, owner: { address: mine ? address : null } };
+      }); //TODO: have to find the unknown owner of the tokens
       console.log({ assetsResponse });
       setPage({ prev: assetsResponse.previous, next: assetsResponse.next });
       setAllWrappedTokens(assetsResponse.assets);
       try {
         const statsResponse = await getWrappedCollectionStats();
-        console.log({ statsResponse });
+        // console.log({ statsResponse });
         setTotalSupply(statsResponse.stats.total_supply);
       } catch (e) {
         console.log(e);
@@ -129,9 +131,7 @@ function WrappedTokens({
   // let filteredOEs = Object.values(allWrappedTokens).filter(
   //   a => a.owner.address !== "0x0000000000000000000000000000000000000000",
   // );
-
   console.log({ allWrappedTokens, filteredOEs });
-
   return (
     <div style={{ width: "auto", margin: "auto", paddingBottom: 25, minHeight: 800 }}>
       {false ? (
@@ -190,19 +190,8 @@ function WrappedTokens({
                     >
                       <img src={item.image_url && item.image_url} alt={"WrappedTokens #" + id} width="100" />
                     </a>
-                    {item.owner && (
-                      <div>
-                        Creator:
-                        <Address
-                          address={item.creator.address}
-                          ensProvider={mainnetProvider}
-                          blockExplorer={blockExplorer}
-                          fontSize={16}
-                        />
-                      </div>
-                    )}
-                    {address && item.owner.address == address.toLowerCase() && (
-                      <>
+                    {mine && address && (
+                      <div style={{ position: "relative", top: "0.5em" }}>
                         <Button
                           type="primary"
                           onClick={async () => {
@@ -215,15 +204,7 @@ function WrappedTokens({
                         >
                           Unwrap
                         </Button>
-                        <Popover
-                          content={() => {
-                            return sendForm(id);
-                          }}
-                          title="Transfer:"
-                        >
-                          <Button type="primary">Transfer</Button>
-                        </Popover>
-                      </>
+                      </div>
                     )}
                   </Card>
                 </List.Item>
@@ -231,6 +212,10 @@ function WrappedTokens({
             }}
           />
           <div>
+            <p>{mine ? filteredOEs.length : totalSupply} items</p>
+            <Button onClick={() => fetchMetadataAndUpdate(null)} disabled={!page.prev}>
+              First Page
+            </Button>
             <Button
               onClick={() => {
                 fetchMetadataAndUpdate(false);
