@@ -34,7 +34,7 @@ const { Text } = Typography;
 const blockExplorerLink = (address, blockExplorer) => `${blockExplorer || "https://etherscan.io/"}address/${address}`;
 
 export default function Address(props) {
-  console.log({creator: props.address});
+  console.log({ creator: props.address });
   const { currentTheme } = useThemeSwitcher();
   const address = props.value || props.address;
   const ens = useLookupAddress(props.ensProvider, address);
