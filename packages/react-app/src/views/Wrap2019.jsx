@@ -17,16 +17,23 @@ function Wrap2019({
   const [approved, setApproved] = useState({});
   const [loadingWrappedTokens, setLoadingWrappedTokens] = useState(true);
   const perPage = 12;
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState({ prev: null, next: null });
 
-  const fetchMetadataAndUpdate = async () => {
+  const fetchMetadataAndUpdate = async isNextQuery => {
     if (address) {
       try {
-        const assetsResponse = await getUnwrapped2019({
-          ownerAddress: address,
-          limit: perPage,
-          offset: page * perPage,
-        });
+        const assetsResponse =
+          isNextQuery === null
+            ? await getUnwrapped2019({
+                ownerAddress: address,
+                limit: perPage,
+                offset: null,
+              })
+            : await getUnwrapped2019({
+                ownerAddress: address,
+                limit: perPage,
+                offset: isNextQuery ? page.next : page.prev,
+              });
         const isApproved = await readContracts[nftContract].isApprovedForAll(
           address,
           readContracts[wrapperContract].address,
@@ -46,9 +53,7 @@ function Wrap2019({
     fetchMetadataAndUpdate();
   }, [readContracts[wrapperContract], page]);
 
-  let filteredOEs = Object.values(allWrappedTokens).filter(
-    a => a.owner.address !== "0x0000000000000000000000000000000000000000",
-  );
+  let filteredOEs = Object.values(allWrappedTokens);
 
   return (
     <div style={{ width: "auto", margin: "auto", paddingBottom: 25, minHeight: 800 }}>
@@ -76,15 +81,6 @@ function Wrap2019({
               xxl: 4,
             }}
             locale={address ? { emptyText: `waiting for tokens...` } : { emptyText: `connect your wallet...` }}
-            pagination={{
-              total: filteredOEs.length,
-              defaultPageSize: perPage,
-              defaultCurrent: page,
-              onChange: currentPage => {
-                setPage(currentPage - 1);
-              },
-              showTotal: (total, range) => `${range[0]}-${range[1]} of ${filteredOEs.length} items`,
-            }}
             loading={loadingWrappedTokens}
             dataSource={filteredOEs ? filteredOEs : []}
             renderItem={item => {
@@ -108,60 +104,73 @@ function Wrap2019({
                     >
                       <img src={item.image_url && item.image_url} alt={"WrappedTokens #" + id} width="100" />
                     </a>
-                    {item.owner && (
-                      <div>
-                        <Address
-                          address={item.owner.address}
-                          ensProvider={mainnetProvider}
-                          blockExplorer={blockExplorer}
-                          fontSize={16}
-                        />
-                      </div>
-                    )}
-                    {address && item.owner.address == address.toLowerCase() && !approved && (
-                      <>
-                        <Button
-                          type="primary"
-                          onClick={async () => {
-                            try {
-                              const txCur = await tx(
-                                writeContracts[nftContract].setApprovalForAll(
-                                  readContracts[wrapperContract].address,
-                                  true,
-                                ),
-                              );
-                              await txCur.wait();
-                            } catch (e) {
-                              console.log("approve failed", e);
-                            }
-                          }}
-                        >
-                          Approve
-                        </Button>
-                      </>
-                    )}
-                    {address && item.owner.address == address.toLowerCase() && approved && (
-                      <>
-                        <Button
-                          type="primary"
-                          onClick={async () => {
-                            try {
-                              const txCur = await tx(writeContracts[wrapperContract].wrap2019(item.token_id));
-                              await txCur.wait();
-                            } catch (e) {
-                              console.log("wrap failed", e);
-                            }
-                          }}
-                        >
-                          Wrap
-                        </Button>
-                      </>
-                    )}
+                    <div style={{ position: "relative", top: "0.5em" }}>
+                      {!approved && (
+                        <>
+                          <Button
+                            type="primary"
+                            onClick={async () => {
+                              try {
+                                const txCur = await tx(
+                                  writeContracts[nftContract].setApprovalForAll(
+                                    readContracts[wrapperContract].address,
+                                    true,
+                                  ),
+                                );
+                                await txCur.wait();
+                              } catch (e) {
+                                console.log("approve failed", e);
+                              }
+                            }}
+                          >
+                            Approve
+                          </Button>
+                        </>
+                      )}
+                      {approved && (
+                        <>
+                          <Button
+                            type="primary"
+                            onClick={async () => {
+                              try {
+                                const txCur = await tx(writeContracts[wrapperContract].wrap2019(item.token_id));
+                                await txCur.wait();
+                              } catch (e) {
+                                console.log("wrap failed", e);
+                              }
+                            }}
+                          >
+                            Wrap
+                          </Button>
+                        </>
+                      )}
+                    </div>
                   </Card>
                 </List.Item>
               );
             }}
           />
+          <div>
+            <Button onClick={() => fetchMetadataAndUpdate(null)} disabled={!page.prev}>
+              First Page
+            </Button>
+            <Button
+              onClick={() => {
+                fetchMetadataAndUpdate(false);
+              }}
+              disabled={!page.prev}
+            >
+              Previous Page
+            </Button>
+            <Button
+              onClick={() => {
+                fetchMetadataAndUpdate(true);
+              }}
+              disabled={!page.next}
+            >
+              Next Page
+            </Button>
+          </div>
         </div>
       )}
     </div>

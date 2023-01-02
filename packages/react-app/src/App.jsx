@@ -280,6 +280,7 @@ function App(props) {
             address={address}
             blockExplorer={blockExplorer}
             contractConfig={contractConfig}
+            collection="2017 ERC20 CREEPS"
           />
           <Contract
             name="DadaNFT"
@@ -289,6 +290,7 @@ function App(props) {
             address={address}
             blockExplorer={blockExplorer}
             contractConfig={contractConfig}
+            collection="2019 ERC721 WEIRDOS"
           />
           <Contract
             name="DadaWrapper"
@@ -298,6 +300,7 @@ function App(props) {
             address={address}
             blockExplorer={blockExplorer}
             contractConfig={contractConfig}
+            collection="Wrapped Historic DADA"
           />
         </Route>
         <Route path="/wrap2017">

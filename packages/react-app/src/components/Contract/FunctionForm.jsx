@@ -225,7 +225,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
                 result = tryToDisplay(returned);
               }
 
-              console.log("SETTING RESULT:", result);
+              // console.log("SETTING RESULT:", result);
               setReturnValue(result);
               triggerRefresh(true);
             }}

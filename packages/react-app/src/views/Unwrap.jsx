@@ -14,7 +14,7 @@ const handleUnwrap = async (tokenId, contract, tx) => {
   if (vintage === "2019") {
     const tokenNumber = parseInt(tokenId.slice(9, 14));
     const encoded = await contract.interface.encodeFunctionData("unwrap2019(uint256)", [tokenNumber]);
-    console.log({ encoded });
+    // console.log({ encoded });
     const txCur = await tx(contract.unwrap2019(tokenNumber));
     await txCur.wait();
   }
@@ -32,20 +32,31 @@ function WrappedTokens({
   const [allWrappedTokens, setAllWrappedTokens] = useState({});
   const [loadingWrappedTokens, setLoadingWrappedTokens] = useState(true);
   const [mine, setMine] = useState(false);
-  const perPage = 25;
-  const [page, setPage] = useState(0);
+  const perPage = 24;
+  const [page, setPage] = useState({ prev: null, next: null });
   const [totalSupply, setTotalSupply] = useState(0);
 
-  const fetchMetadataAndUpdate = async () => {
-    let ownerAddress;
-    if (mine) ownerAddress = address;
+  const fetchMetadataAndUpdate = async isNextQuery => {
+    const ownerAddress = mine ? address : null;
     try {
-      const assetsResponse = await getWrapped2019({ ownerAddress, limit: perPage, offset: page * perPage });
+      const assetsResponse =
+        isNextQuery === null
+          ? await getWrapped2019({
+              ownerAddress,
+              limit: perPage,
+              offset: null,
+            })
+          : await getWrapped2019({
+              ownerAddress,
+              limit: perPage,
+              offset: isNextQuery ? page.next : page.prev,
+            });
       console.log({ assetsResponse });
+      setPage({ prev: assetsResponse.previous, next: assetsResponse.next });
       setAllWrappedTokens(assetsResponse.assets);
       try {
         const statsResponse = await getWrappedCollectionStats();
-        console.log({ statsResponse });
+        // console.log({ statsResponse });
         setTotalSupply(statsResponse.stats.total_supply);
       } catch (e) {
         console.log(e);
@@ -58,7 +69,7 @@ function WrappedTokens({
 
   useEffect(() => {
     fetchMetadataAndUpdate();
-  }, [readContracts[wrapperContract], page, mine]);
+  }, [mine]);
 
   const onFinishFailed = errorInfo => {
     console.log("Failed:", errorInfo);
@@ -82,7 +93,7 @@ function WrappedTokens({
                 writeContracts[wrapperContract]["safeTransferFrom(address,address,uint256)"](address, values["to"], id),
               );
               await txCur.wait();
-              fetchMetadataAndUpdate();
+              fetchMetadataAndUpdate(null);
               setSending(false);
             } catch (e) {
               console.log("send failed", e);
@@ -117,9 +128,7 @@ function WrappedTokens({
   // let filteredOEs = Object.values(allWrappedTokens).filter(
   //   a => a.owner.address !== "0x0000000000000000000000000000000000000000",
   // );
-
   console.log({ allWrappedTokens, filteredOEs });
-
   return (
     <div style={{ width: "auto", margin: "auto", paddingBottom: 25, minHeight: 800 }}>
       {false ? (
@@ -129,7 +138,7 @@ function WrappedTokens({
           <div style={{ marginBottom: 5 }}>
             <Button
               onClick={() => {
-                return fetchMetadataAndUpdate();
+                return fetchMetadataAndUpdate(null);
               }}
             >
               Refresh
@@ -156,16 +165,6 @@ function WrappedTokens({
               xxl: 4,
             }}
             locale={{ emptyText: `waiting for tokens...` }}
-            pagination={{
-              total: mine ? filteredOEs.length : totalSupply,
-              defaultPageSize: perPage,
-              defaultCurrent: page,
-              onChange: currentPage => {
-                setPage(currentPage - 1);
-              },
-              showTotal: (total, range) =>
-                `${range[0]}-${range[1]} of ${mine ? filteredOEs.length : totalSupply} items`,
-            }}
             loading={loadingWrappedTokens}
             dataSource={filteredOEs ? filteredOEs : []}
             renderItem={item => {
@@ -188,19 +187,8 @@ function WrappedTokens({
                     >
                       <img src={item.image_url && item.image_url} alt={"WrappedTokens #" + id} width="100" />
                     </a>
-                    {item.owner && (
-                      <div>
-                        Creator:
-                        <Address
-                          address={item.creator.address}
-                          ensProvider={mainnetProvider}
-                          blockExplorer={blockExplorer}
-                          fontSize={16}
-                        />
-                      </div>
-                    )}
-                    {address && item.owner.address == address.toLowerCase() && (
-                      <>
+                    {mine && address && (
+                      <div style={{ position: "relative", top: "0.5em" }}>
                         <Button
                           type="primary"
                           onClick={async () => {
@@ -213,21 +201,35 @@ function WrappedTokens({
                         >
                           Unwrap
                         </Button>
-                        <Popover
-                          content={() => {
-                            return sendForm(id);
-                          }}
-                          title="Transfer:"
-                        >
-                          <Button type="primary">Transfer</Button>
-                        </Popover>
-                      </>
+                      </div>
                     )}
                   </Card>
                 </List.Item>
               );
             }}
           />
+          <div>
+            {!mine && <p>{totalSupply} items</p>}
+            <Button onClick={() => fetchMetadataAndUpdate(null)} disabled={!page.prev}>
+              First Page
+            </Button>
+            <Button
+              onClick={() => {
+                fetchMetadataAndUpdate(false);
+              }}
+              disabled={!page.prev}
+            >
+              Previous Page
+            </Button>
+            <Button
+              onClick={() => {
+                fetchMetadataAndUpdate(true);
+              }}
+              disabled={!page.next}
+            >
+              Next Page
+            </Button>
+          </div>
         </div>
       )}
     </div>
