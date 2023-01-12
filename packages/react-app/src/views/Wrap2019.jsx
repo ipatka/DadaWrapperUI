@@ -34,6 +34,8 @@ function Wrap2019({
                 limit: perPage,
                 offset: isNextQuery ? page.next : page.prev,
               });
+        console.log({ assetsResponse });
+        setPage({ prev: assetsResponse.previous, next: assetsResponse.next });
         const isApproved = await readContracts[nftContract].isApprovedForAll(
           address,
           readContracts[wrapperContract].address,
@@ -51,7 +53,7 @@ function Wrap2019({
 
   useEffect(() => {
     fetchMetadataAndUpdate();
-  }, [readContracts[wrapperContract], page]);
+  }, [readContracts[wrapperContract]]);
 
   let filteredOEs = Object.values(allWrappedTokens);
 
@@ -86,7 +88,6 @@ function Wrap2019({
             renderItem={item => {
               const id = item.token_id;
 
-              console.log({ approved });
               return (
                 <List.Item key={id}>
                   <Card
