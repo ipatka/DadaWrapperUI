@@ -4,7 +4,6 @@ import {
   useBalance,
   useContractLoader,
   useContractReader,
-  useGasPrice,
   useOnBlock,
   useUserProviderAndSigner,
 } from "eth-hooks";
@@ -112,7 +111,6 @@ function App(props) {
   const price = useExchangeEthPrice(targetNetwork, mainnetProvider);
 
   /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
-  const gasPrice = useGasPrice(targetNetwork, "fast");
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, USE_BURNER_WALLET);
   const userSigner = userProviderAndSigner.signer;
@@ -135,7 +133,7 @@ function App(props) {
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // The transactor wraps transactions and provides notificiations
-  const tx = Transactor(userSigner, gasPrice);
+  const tx = Transactor(userSigner);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address);
@@ -379,9 +377,6 @@ function App(props) {
             <Ramp price={price} address={address} networks={NETWORKS} />
           </Col>
 
-          <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
-            <GasGauge gasPrice={gasPrice} />
-          </Col>
           <Col span={8} style={{ textAlign: "center", opacity: 1 }}>
             <Button
               onClick={() => {

@@ -1,14 +1,17 @@
-export function apiRequest({ path, method = "GET", data }) {
+export function apiRequest({ path, apiKey, method = "GET", data }) {
   return fetch(path, {
     method,
     headers: {
       "Content-Type": "application/json",
+      "X-API-KEY": apiKey
     },
     referrerPolicy: "no-referrer",
     redirect: "follow",
     body: data ? JSON.stringify(data) : undefined,
   }).then(res => res.json());
 }
+
+const apiKey=process.env.REACT_APP_OPENSEA
 
 export function getWrapped2019({ ownerAddress, limit, offset }) {
   let path = "https://api.opensea.io/api/v1/assets?asset_contract_address=0x5f53f9f5dcf76757f7cbf35c2e47164c65b9b5ed";
@@ -18,7 +21,7 @@ export function getWrapped2019({ ownerAddress, limit, offset }) {
   }
   if (limit) path += `&limit=${limit}`;
   // console.log({ path });
-  return apiRequest({ path });
+  return apiRequest({ path, apiKey });
 }
 
 export function getWrappedCollectionStats() {
@@ -34,7 +37,7 @@ export function getUnwrapped2019({ ownerAddress, limit, offset }) {
   }
   if (limit) path += `&limit=${limit}`;
   // console.log({ path });
-  return apiRequest({ path });
+  return apiRequest({ path, apiKey });
 }
 
 export function getUnwrapped2017({ ownerAddress }) {
