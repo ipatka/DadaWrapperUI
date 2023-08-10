@@ -3,7 +3,7 @@ export function apiRequest({ path, apiKey, method = "GET", data }) {
     method,
     headers: {
       "Content-Type": "application/json",
-      "X-API-KEY": apiKey
+      "X-API-KEY": apiKey,
     },
     referrerPolicy: "no-referrer",
     redirect: "follow",
@@ -11,7 +11,7 @@ export function apiRequest({ path, apiKey, method = "GET", data }) {
   }).then(res => res.json());
 }
 
-const apiKey=process.env.REACT_APP_OPENSEA
+const apiKey = process.env.REACT_APP_OPENSEA;
 
 export function getWrapped2019({ ownerAddress, limit, offset }) {
   let path = "https://api.opensea.io/api/v1/assets?asset_contract_address=0x5f53f9f5dcf76757f7cbf35c2e47164c65b9b5ed";
